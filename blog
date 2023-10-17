@@ -1,0 +1,57 @@
+CREATE DATABASE BlogDB;
+
+USE BlogDB;
+
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY,
+    UserName VARCHAR(50),
+    Email VARCHAR(100)
+);
+
+CREATE TABLE BlogPosts (
+    PostID INT PRIMARY KEY,
+    Title VARCHAR(200),
+    Content TEXT,
+    UserID INT,
+    PostDate DATE,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Comments (
+    CommentID INT PRIMARY KEY,
+    PostID INT,
+    UserID INT,
+    Comment TEXT,
+    CommentDate DATE,
+    FOREIGN KEY (PostID) REFERENCES BlogPosts(PostID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+INSERT INTO Users (UserID, UserName, Email)
+VALUES
+    (1, 'Ali Can', 'ali.can@example.com'),
+    (2, 'Ayse Ok', 'ayse.ok@example.com'),
+    (3, 'Cem Ak', 'cem.ak@example.com');
+
+INSERT INTO BlogPosts (PostID, Title, Content, UserID, PostDate)
+VALUES
+    (1, 'Introduction to SQL', 'SQL is a powerful language for managing relational databases...', 1, '2023-01-10'),
+    (2, 'Web Development Tips', 'Here are some tips for becoming a better web developer...', 2, '2023-02-15'),
+    (3, 'The Art of Writing', 'Writing is a beautiful form of expression that allows us to...', 3, '2023-03-20');
+
+INSERT INTO Comments (CommentID, PostID, UserID, Comment, CommentDate)
+VALUES
+    (1, 1, 2, 'Great introduction! Looking forward to more posts.', '2023-01-12'),
+    (2, 2, 1, 'Thanks for the tips! Very helpful.', '2023-02-17'),
+    (3, 3, 2, 'I completely agree. Writing is therapeutic.', '2023-03-22');
+
+SELECT
+    BlogPosts.Title,
+    BlogPosts.Content,
+    Users.UserName AS Author,
+    Comments.Comment,
+    Comments.CommentDate
+FROM
+    BlogPosts
+JOIN Users ON BlogPosts.UserID = Users.UserID
+LEFT JOIN Comments ON BlogPosts.PostID = Comments.PostID;
